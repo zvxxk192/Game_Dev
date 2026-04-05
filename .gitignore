@@ -1,0 +1,13 @@
+*
+!*/
+!*.cs
+!.gitignore
+
+Packages/
+Library/
+Temp/
+obj/
+Logs/
+UserSettings/
+MemoryCaptures/
+UnityTechnologies/
