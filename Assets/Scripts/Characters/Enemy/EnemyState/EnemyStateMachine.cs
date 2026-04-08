@@ -3,7 +3,7 @@ using UnityEngine;
 public class EnemyStateMachine : MonoBehaviour
 {
     [Header("Data Source")]
-    public EnemyData Data { get; private set; }
+    public EnemyData Data;
 
     public IEnemyState CurrentState { get; private set; }
 

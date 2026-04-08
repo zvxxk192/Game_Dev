@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class PasuedMenuUI : BaseView
+public class PauseNav : BaseView
 {
     private Button _resumeBtn;
     private Button _quitBtn;

@@ -10,6 +10,8 @@ public class EnemyGroundedState : EnemyBaseState
     }
     public override void Tick()
     {
+        if (ctx.EnemyController == null || ctx.Data == null) return;
+
         if (ctx.EnemyController.distSqr <= ctx.Data.AttackRadius * ctx.Data.AttackRadius)
         {
             // ª¬ºA¤@ : §ðÀ»
