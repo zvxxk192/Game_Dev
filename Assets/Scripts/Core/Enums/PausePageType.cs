@@ -2,7 +2,8 @@ using UnityEngine;
 
 public enum PausePageType
 {
-    None,
+    Enable,
+    Disable,
     Settings,
     Save
 }
