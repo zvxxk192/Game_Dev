@@ -36,7 +36,7 @@ public class GameStateManager : MonoBehaviour
     {
         if (CurrentState == newState) return;
         CurrentState = newState;
- 
+
         OnGameStateChanged?.Invoke(newState);
     }
 }

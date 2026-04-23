@@ -3,6 +3,8 @@ using UnityEngine.UIElements;
 
 public abstract class BaseView : MonoBehaviour
 {
+    public bool IsVisible { get; private set; }
+
     protected VisualElement Root;
     protected bool IsInitialized { get; private set; }
 
@@ -50,4 +52,29 @@ public abstract class BaseView : MonoBehaviour
     protected abstract void OnRegisterEvents();
     protected abstract void OnUnregisterEvents();
     protected virtual void OnPostInitialize() { }
+
+
+    public void Show()
+    {
+        if (IsVisible) return;
+
+        Root.style.display = DisplayStyle.Flex;
+        IsVisible = true;
+
+        // 觸發自訂的開啟邏輯，讓子類別去覆寫
+        OnShow();
+    }
+    public void Hide()
+    {
+        if (!IsVisible) return;
+
+        Root.style.display = DisplayStyle.None;
+        IsVisible = false;
+
+        // 觸發自訂的關閉邏輯，讓子類別去覆寫
+        OnHide();
+    }
+
+    protected virtual void OnShow() { }
+    protected virtual void OnHide() { }
 }
