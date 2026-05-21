@@ -85,13 +85,13 @@ public class PlayerInput : MonoBehaviour
                 return;
             }
 
-            // 如果目前暫停，則關閉 UIManager 堆頂的子子頁面
-            if (GameStateManager.Instance.CurrentState == GameState.Paused)
-            {
-                // 理論上不會失敗，為防治 Bug 用
-                if (!UIManager.Instance.TryCloseTopPanel())
-                    GameStateManager.Instance.ChangeState(GameState.Playing);
-            }
+            //// 如果目前暫停，則關閉 UIManager 堆頂的子頁面
+            //if (GameStateManager.Instance.CurrentState == GameState.Paused)
+            //{
+            //    // 理論上不會失敗，為防治 Bug 用
+            //    if (!UIManager.Instance.TryCloseTopPanel())
+            //        GameStateManager.Instance.ChangeState(GameState.Playing);
+            //}
         }
     }
     void HandlePlayerInteractInput()

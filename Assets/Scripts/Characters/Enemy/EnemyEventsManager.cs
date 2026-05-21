@@ -12,5 +12,5 @@ public class EnemyEventsManager : MonoBehaviour
     public void TriggerEnemyLevelUp(int currentLevel)
         => OnEnemyLevelUp?.Invoke(currentLevel);
     public void TriggerEnemyPoiseChanged(float currentPoise, float maxPoise)
-        => OnEnemyPoiseChanged(currentPoise, maxPoise);
+        => OnEnemyPoiseChanged?.Invoke(currentPoise, maxPoise);
 }
