@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -48,8 +49,8 @@ public class PhantomDodgeEffect : MonoBehaviour
             partObj.transform.rotation = smr.transform.rotation;
 
             // 加入網格和渲染組件
-            MeshRenderer meshRenderer = partObj.AddComponent<MeshRenderer>();
             MeshFilter meshFilter = partObj.AddComponent<MeshFilter>();
+            MeshRenderer meshRenderer = partObj.AddComponent<MeshRenderer>();
 
             // 烘焙網格
             Mesh bakedMesh = new Mesh();
@@ -71,7 +72,7 @@ public class PhantomDodgeEffect : MonoBehaviour
             elapsed += Time.deltaTime;
             float currentAlpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);
 
-            foreach(var mat in matInstances)
+            foreach (var mat in matInstances)
             {
                 if (mat != null) mat.SetFloat("_Alpha", currentAlpha);
             }

@@ -48,8 +48,10 @@ public class PlayerStats : MonoBehaviour
         get => currentHp;
         set
         {
+            if (value == currentHp) return;
+            bool isIncrease = value > currentHp;
             currentHp = Mathf.Clamp(value, 0, MaxHp);
-            events.TriggerPlayerHpChanged(currentHp, MaxHp);
+            events.TriggerPlayerHpChanged(currentHp, MaxHp, isIncrease);
         }
     }
 

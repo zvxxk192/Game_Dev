@@ -18,6 +18,9 @@ public class PlayerCounterAttackState : PlayerBaseState
     public override void Exit()
     {
         ctx.PlayerMov.TriggerRootMotion(false);
+
+        // ¨¾¤î°Êµe³Q¤ÁÂ_
+        ctx.PlayerReact.OnAnimationEvent_SetInvincible(false);
     }
     public override void Tick()
     {
