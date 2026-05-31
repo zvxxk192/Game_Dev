@@ -1,6 +1,5 @@
-using UnityEngine;
 
-public enum GameState
+public enum GameStateCommand
 {
     Playing,
     PlayerDead,

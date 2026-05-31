@@ -36,9 +36,9 @@ public class HealthBarUI : MonoBehaviour
     private void HealthDecrease(Image fill, Image follow, Image buffer)
     {
         // ½T«O³QÀWÁc¤Á´«¤£¬ð¤a
-        fill.DOKill(true);
-        follow.DOKill(true);
-        buffer.DOKill(true);
+        fill?.DOKill(true);
+        follow?.DOKill(true);
+        buffer?.DOKill(true);
 
         float targetHpPercent = _currentHp / _maxHp;
 
@@ -56,9 +56,9 @@ public class HealthBarUI : MonoBehaviour
     private void HealthIncrease(Image fill, Image follow, Image buffer)
     {
         // ½T«O³QÀWÁc¤Á´«¤£¬ð¤a
-        fill.DOKill(true);
-        follow.DOKill(true);
-        buffer.DOKill(true);
+        fill?.DOKill(true);
+        follow?.DOKill(true);
+        buffer?.DOKill(true);
 
         float targetHpPercent = _currentHp / _maxHp;
 

@@ -1,7 +1,7 @@
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using UnityEngine;
-
+/*
 public class DeathScreenUI : BaseView
 {
     private VisualElement deathScreen;
@@ -36,3 +36,4 @@ public class DeathScreenUI : BaseView
         SceneManager.LoadScene(currentSceneIndex);
     }
 }
+*/

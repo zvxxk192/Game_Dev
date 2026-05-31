@@ -1,6 +1,5 @@
-using UnityEngine;
-using UnityEngine.UIElements;
 using System;
+using UnityEngine;
 
 public class GameStateManager : MonoBehaviour
 {
@@ -18,24 +17,35 @@ public class GameStateManager : MonoBehaviour
     }
 
     [Header("State")]
-    public GameState CurrentState { get; private set; }
+    public IGameState CurrentState { get; private set; }
 
-    public event Action<GameState> OnGameStateChanged;
+    public GamePausedState GamePausedState { get; private set; }
+    public GamePlayingState GamePlayingState { get; private set; }
+
+    public event Action<IGameState> OnGameStateChanged;
 
     private void Awake()
     {
         if (_instance == null) _instance = this;
         else if (_instance != this) Destroy(gameObject);
+
+        GamePausedState = new GamePausedState(this);
+        GamePlayingState = new GamePlayingState(this);
     }
     private void OnEnable()
     {
-        ChangeState(GameState.Playing);
+        ChangeState(GamePlayingState);
     }
 
-    public void ChangeState(GameState newState)
+    private void Update() => CurrentState?.Tick();
+
+    public void ChangeState(IGameState newState)
     {
         if (CurrentState == newState) return;
+
+        CurrentState?.Exit();
         CurrentState = newState;
+        CurrentState?.Enter();
 
         OnGameStateChanged?.Invoke(newState);
     }

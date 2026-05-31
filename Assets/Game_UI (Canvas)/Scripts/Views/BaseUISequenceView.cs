@@ -35,7 +35,7 @@ public abstract class BaseUISequenceView : MonoBehaviour
         canvasGroup.interactable = true;
         canvasGroup.blocksRaycasts = true;
 
-        currentSequence = DOTween.Sequence().SetLink(gameObject);
+        currentSequence = DOTween.Sequence().SetLink(gameObject).SetUpdate(true);
 
         // ²H¤J
         currentSequence.Append(canvasGroup.DOFade(1f, fadeDuration).SetEase(openEase));
@@ -59,7 +59,7 @@ public abstract class BaseUISequenceView : MonoBehaviour
         canvasGroup.blocksRaycasts = false;
 
         currentSequence?.Kill(true);
-        currentSequence = DOTween.Sequence().SetLink(gameObject);
+        currentSequence = DOTween.Sequence().SetLink(gameObject).SetUpdate(true);
 
         // ²H¥X
         currentSequence.Append(canvasGroup.DOFade(0f, fadeDuration).SetEase(closeEase));

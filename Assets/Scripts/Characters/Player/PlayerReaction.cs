@@ -116,6 +116,6 @@ public class PlayerReaction : MonoBehaviour, IDamageable
         if (input != null) input.SetInputEnabled(false);
         rb.isKinematic = true;
 
-        GameStateManager.Instance.ChangeState(GameState.PlayerDead);
+        //GameStateManager.Instance.ChangeState(GameStateCommand.PlayerDead);
     }
 }

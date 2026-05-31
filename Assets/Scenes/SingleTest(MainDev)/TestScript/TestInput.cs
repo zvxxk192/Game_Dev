@@ -15,8 +15,14 @@ public class TestInput : MonoBehaviour
             IsPauseMenuOpen = !IsPauseMenuOpen;
         }
         if (IsPauseMenuOpen)
+        {
             pauseMenu.OpenPanel();
+            Time.timeScale = 0f;
+        }
         else
+        {
             pauseMenu.ClosePanel();
+            Time.timeScale = 1.0f;
+        }
     }
 }

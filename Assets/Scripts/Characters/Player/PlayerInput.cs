@@ -33,16 +33,21 @@ public class PlayerInput : MonoBehaviour
             return;
         }
 
+        HandleGameStateInput();
+        if (GameStateManager.Instance.CurrentState == GameStateManager.Instance.GamePausedState) return;
+
+        CalculateMovementInput();
+
+        HandlePlayerStateInput();
+
+        HandlePlayerInteractInput();
+    }
+    void CalculateMovementInput()
+    {
         Horizontal = Input.GetAxisRaw("Horizontal");
         Vertical = Input.GetAxisRaw("Vertical");
         Direction = new Vector3(Horizontal, 0f, Vertical).normalized;
         InputMagnitude = Mathf.Clamp01(Direction.magnitude);
-
-        HandlePlayerStateInput();
-
-        HandleGameStateInput();
-
-        HandlePlayerInteractInput();
     }
     void HandlePlayerStateInput()
     {
@@ -79,19 +84,17 @@ public class PlayerInput : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (GameStateManager.Instance.CurrentState == GameState.Playing)
+            if (GameStateManager.Instance.CurrentState == GameStateManager.Instance.GamePlayingState)
             {
-                GameStateManager.Instance.ChangeState(GameState.Paused);
+                GameStateManager.Instance.ChangeState(GameStateManager.Instance.GamePausedState);
                 return;
             }
 
-            //// 如果目前暫停，則關閉 UIManager 堆頂的子頁面
-            //if (GameStateManager.Instance.CurrentState == GameState.Paused)
-            //{
-            //    // 理論上不會失敗，為防治 Bug 用
-            //    if (!UIManager.Instance.TryCloseTopPanel())
-            //        GameStateManager.Instance.ChangeState(GameState.Playing);
-            //}
+            // 如果目前暫停，則關閉 UIManager 堆頂的子頁面
+            if (GameStateManager.Instance.CurrentState == GameStateManager.Instance.GamePausedState)
+            {   
+                GameStateManager.Instance.ChangeState(GameStateManager.Instance.GamePlayingState);
+            }
         }
     }
     void HandlePlayerInteractInput()
