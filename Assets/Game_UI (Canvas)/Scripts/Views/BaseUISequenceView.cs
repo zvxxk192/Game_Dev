@@ -8,6 +8,7 @@ public abstract class BaseUISequenceView : MonoBehaviour
     private Sequence currentSequence;
 
     [Header("UI 基礎設定")]
+    [SerializeField] protected float bufferDuration = 0.2f;  // 防止動畫執行期間亂點
     [SerializeField] protected float fadeDuration = 0.4f;
     [SerializeField] protected Ease openEase = Ease.OutCubic;
     [SerializeField] protected Ease closeEase = Ease.InCubic;
@@ -32,8 +33,6 @@ public abstract class BaseUISequenceView : MonoBehaviour
 
         // 顯示基本設定（允許點擊）
         gameObject.SetActive(true);
-        canvasGroup.interactable = true;
-        canvasGroup.blocksRaycasts = true;
 
         currentSequence = DOTween.Sequence().SetLink(gameObject).SetUpdate(true);
 
@@ -43,7 +42,13 @@ public abstract class BaseUISequenceView : MonoBehaviour
         // 讓子類別去塞入自己專屬的動畫
         OnBuildOpenSequence(currentSequence);
 
-        currentSequence.OnComplete(OnOpenComplete);
+        currentSequence.OnComplete(() =>
+        {
+            // 延遲互動，防止玩家在淡入時亂點
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
+            OnOpenComplete();
+        });
     }
 
     /// <summary>

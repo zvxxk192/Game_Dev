@@ -24,13 +24,16 @@ public class SwordCombat : MonoBehaviour, IWeapon
         {
             if (currentComboStep > 0)
                 return defaultCombo.comboSteps[currentComboStep - 1];
-            else
+            else if (currentComboStep == -1)
                 return defaultCombo.counterAttack;
+            else
+                return null;
         }
     }
 
     [Header("SFX / VFX")]
-    public AudioSource audioSource;
+    //public AudioSource audioSource;
+    //[SerializeField] private AudioEvent hitAudioSource;
 
     [Header("Combo Setting")]
     private bool isAttacking = false;
@@ -153,10 +156,9 @@ public class SwordCombat : MonoBehaviour, IWeapon
     }
     void PlayAttackSound()
     {
-        if (audioSource != null && currentComboStep != 0)
+        if (currentComboStep != 0 && currentAction != null)
         {
-            audioSource.pitch = Random.Range(0.8f, 1.2f);
-            audioSource.PlayOneShot(currentAction.AttackSound);
+            AudioManager.Instance.PlayAudioEvent(currentAction.AttackAudioEvent, transform.position);
         }
     }
 

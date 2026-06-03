@@ -19,5 +19,5 @@ public class AttackAction : ScriptableObject
     public GameObject OverrideHitEffect;
 
     [Header("SFX")]
-    public AudioClip AttackSound;
+    public AudioEvent AttackAudioEvent;
 }

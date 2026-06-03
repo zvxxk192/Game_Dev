@@ -59,13 +59,14 @@ public class PauseMenuRouter : MonoBehaviour
             tabs[i].contentView.gameObject.SetActive(false);
         }
 
+
         // 預防讀到還未佈局完的物件位置
         Canvas.ForceUpdateCanvases();
-        // 預設打開第一個分頁
-        if (tabs.Length > 0)
-        {
-            SwitchTab(0);
-        }
+        //// 預設打開第一個分頁
+        //if (tabs.Length > 0)
+        //{
+        //    SwitchTab(0);
+        //}
     }
 
     public void SwitchTab(int newIndex)
@@ -95,10 +96,19 @@ public class PauseMenuRouter : MonoBehaviour
         _oldIndex = newIndex;
 
         // 實現第一個 (Consume) 的功能
-        //if (newIndex == 0)
-        //    GameStateManager.Instance.ChangeState(GameStateManager.Instance.GamePlayingState);
+        if (newIndex == 0)
+            GameStateManager.Instance.ChangeState(GameStateManager.Instance.GamePlayingState);
 
         // 實現最後一個 (Quit) 的功能
         // Application.Quit();
+    }
+
+    private void OnDestroy()
+    {
+        for (int i = 0; i < tabs.Length; i++)
+        {
+            int index = i;  // 解決閉包陷阱
+            tabs[i].tabButton.onClick.RemoveListener(() => SwitchTab(index));
+        }
     }
 }
