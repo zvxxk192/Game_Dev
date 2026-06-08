@@ -27,15 +27,19 @@ public class GameStateManager : MonoBehaviour
 
     private void Awake()
     {
-        if (_instance == null) _instance = this;
-        else if (_instance != this) Destroy(gameObject);
+        if (_instance == null)
+        {
+            _instance = this;
+        }
+        else if (_instance != this)
+        {
+            Destroy(gameObject);
+        }
 
         GamePausedState = new GamePausedState(this);
         GamePlayingState = new GamePlayingState(this);
         GameOverState = new GameOverState(this);
-    }
-    private void OnEnable()
-    {
+
         ChangeState(GamePlayingState);
     }
 

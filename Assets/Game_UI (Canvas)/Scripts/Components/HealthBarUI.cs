@@ -14,6 +14,13 @@ public class HealthBarUI : MonoBehaviour
     private float _currentHp;
     private float _maxHp;
 
+
+    public void Setup(GameObject player)
+    {
+        events = player.GetComponent<PlayerEventsManager>();
+
+        gameObject.SetActive(true);
+    }
     private void OnEnable()
     {
         events.OnPlayerHpChanged += HandleHealthBarChanged;

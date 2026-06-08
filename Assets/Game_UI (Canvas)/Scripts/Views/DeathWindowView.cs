@@ -2,7 +2,6 @@ using TMPro;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class DeathWindowView : BaseUISequenceView
 {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
@@ -19,12 +20,20 @@ public class UIManager : MonoBehaviour
     [SerializeField] private BaseUISequenceView pauseWindow;
     [SerializeField] private BaseUISequenceView gameOverWindow;
 
-    void Awake()
+    [Header("需要外部物件的 UI Element")]
+    [SerializeField] private StatusTextController statusTextController;
+    [SerializeField] private HealthBarUI healthBarUI;
+
+
+    private BaseUISequenceView currentView; 
+
+    private void Awake()
     {
         if (_instance == null) _instance = this;
         else if (_instance != this) Destroy(gameObject);
+        DontDestroyOnLoad(gameObject);
     }
-    void Start()
+    private void OnEnable()
     {
         // 讓 UIManager 去聽全域遊戲狀態
         if (GameStateManager.Instance != null)
@@ -32,7 +41,7 @@ public class UIManager : MonoBehaviour
             GameStateManager.Instance.OnGameStateChanged += HandleGameState;
         }
     }
-    void OnDisable()
+    private void OnDisable()
     {
         // 讓 UIManager 去聽全域遊戲狀態
         if (GameStateManager.Instance != null)
@@ -41,13 +50,48 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    void HandleGameState(IGameState state)
+    public void PrepareForSceneChange()
+    {
+        healthBarUI.gameObject.SetActive(false);
+        statusTextController.gameObject.SetActive(false);
+    }
+    public void InitializeNewScene(PlayingWorldSceneContext sceneContext)
+    {
+        if (sceneContext == null)
+        {
+            Debug.LogWarning("UIManager: 此場景沒有配置 SceneContext");
+            return;
+        }
+
+        GameObject newPlayer = sceneContext.LevelPlayer;
+
+        if (newPlayer != null)
+        {
+            healthBarUI.Setup(newPlayer);
+            statusTextController.Setup(newPlayer);
+        }
+    }
+
+    private void HandleGameState(IGameState state)
     {
         if (state == GameStateManager.Instance.GamePausedState)
+        {
             pauseWindow.OpenPanel();
+            currentView = pauseWindow;
+        }
         else if (state == GameStateManager.Instance.GamePlayingState)
-            pauseWindow.ClosePanel();
+        {
+            if (currentView != null)
+                currentView.ClosePanel();
+            currentView = null;
+        }
         else if (state == GameStateManager.Instance.GameOverState)
+        {
+            if (currentView != null)
+                currentView.ClosePanel();
+            currentView = gameOverWindow;
+
             gameOverWindow.OpenPanel();
+        }
     }
 }

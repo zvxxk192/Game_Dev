@@ -30,6 +30,8 @@ public class SceneLoader : MonoBehaviour
 
     private void LoadScene(int sceneIndex)
     {
+        // 在場景加載前的前置作業
+        UIManager.Instance.PrepareForSceneChange();
         StartCoroutine(LoadSceneRoutine(sceneIndex));
     }
     private IEnumerator LoadSceneRoutine(int sceneIndex)
@@ -63,6 +65,12 @@ public class SceneLoader : MonoBehaviour
 
             yield return null;
         }
+
+        // 在場景加載完後開始加載物件
+        PlayingWorldSceneContext currentContext = Object.FindFirstObjectByType<PlayingWorldSceneContext>();
+        // 傳給中央頭腦
+        if (UIManager.Instance != null)
+            UIManager.Instance.InitializeNewScene(currentContext);
 
         // 淡出
         loadingView.ClosePanel();

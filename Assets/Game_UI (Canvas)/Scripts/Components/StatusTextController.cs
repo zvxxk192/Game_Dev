@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEditor.Experimental;
 using UnityEngine;
 
 public class StatusTextController : MonoBehaviour
@@ -20,7 +21,21 @@ public class StatusTextController : MonoBehaviour
 
     private bool isInitialize = false;
 
+
+    public void Setup(GameObject player)
+    {
+        events = player.GetComponent<PlayerEventsManager>();
+        stats = player.GetComponent<PlayerStats>();
+        weaponController = player.GetComponent<WeaponController>();
+        wallet = player.GetComponent<PlayerWallet>();
+
+        gameObject.SetActive(true);
+    }
     private void OnEnable()
+    {
+        BindEvent();
+    }
+    private void BindEvent()
     {
         if (events == null) return;
 
@@ -28,17 +43,16 @@ public class StatusTextController : MonoBehaviour
 
         events.OnPlayerLevelUp += HandlePlayerLevelUp;
 
-        events.OnPlayerExpChanged += (currentExp, maxExp) 
-            => { expTextValue.text = $"{(int)currentExp} / {(int)maxExp}"; };
+        events.OnPlayerExpChanged += HandlePlayerExpChanged;
 
-        events.OnPlayerHpChanged += (currentHp, maxHp, isIncrease)
-            => { hpTextValue.text = $"{(int)currentHp} / {(int)maxHp}"; };
+        events.OnPlayerHpChanged += HandlePlayerHpChanged;
 
-        events.OnPlayerGoldChanged += (currentGold)
-            => { goldTextValue.text = currentGold.ToString(); };
+        events.OnPlayerGoldChanged += HandlePlayerGoldChanged;
     }
     private void Start()
     {
+        if (!isInitialize) BindEvent();
+
         levelTextValue.text = stats.CurrentLevel.ToString();
         expTextValue.text = $"{(int)stats.CurrentExp} / {(int)stats.ExpToNextLevel}";
         hpTextValue.text = $"{(int)stats.CurrentHp} / {(int)stats.MaxHp}";
@@ -46,7 +60,18 @@ public class StatusTextController : MonoBehaviour
         goldTextValue.text = wallet.CurrentGold.ToString();
         agilityTextValue.text = ((int)stats.WalkSpeed).ToString();
     }
+    private void OnDisable()
+    {
+        if (events == null) return;
 
+        events.OnPlayerLevelUp -= HandlePlayerLevelUp;
+
+        events.OnPlayerExpChanged -= HandlePlayerExpChanged;
+
+        events.OnPlayerHpChanged -= HandlePlayerHpChanged;
+
+        events.OnPlayerGoldChanged -= HandlePlayerGoldChanged;
+    }
     private void HandlePlayerLevelUp(int currentLevel)
     {
         levelTextValue.text = currentLevel.ToString();
@@ -58,4 +83,10 @@ public class StatusTextController : MonoBehaviour
 
         strengthTextValue.text = weaponController.CurrentDamage.ToString();
     }
+    private void HandlePlayerExpChanged(float currentExp, float maxExp)
+        => expTextValue.text = $"{(int)currentExp} / {(int)maxExp}";
+    private void HandlePlayerHpChanged(float currentHp, float maxHp, bool isIncrease)
+        => hpTextValue.text = $"{(int)currentHp} / {(int)maxHp}";
+    private void HandlePlayerGoldChanged(int currentGold)
+        => goldTextValue.text = currentGold.ToString();
 }
