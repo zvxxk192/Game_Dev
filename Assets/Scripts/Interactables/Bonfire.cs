@@ -2,16 +2,16 @@ using UnityEngine;
 
 public class Bonfire : MonoBehaviour, IInteractable
 {
+    [Header("VFX / SFX")]
     [SerializeField] private GameObject fireParticles;
+
+    [Header("UI Prompt")]
+    [SerializeField] private string prompt;
+    public string Prompt => prompt;
+
     private bool _isLit = false;
 
-    public string GetInteractPrompt()
-    {
-        if (_isLit)
-            return $"<color=green>篝火已點燃 (已存檔)</color>";
-        else
-            return "點燃篝火";
-    }
+    public string GetInteractPrompt() => Prompt;
 
     public void Interact(Transform interactor)
     {

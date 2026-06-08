@@ -16,7 +16,7 @@ public class PlayerInput : MonoBehaviour
 
 
     [Header("Control Flags")]
-    public bool inputEnabled = true;
+    public bool inputEnabled { get; private set; } = true;
 
     void Awake()
     {

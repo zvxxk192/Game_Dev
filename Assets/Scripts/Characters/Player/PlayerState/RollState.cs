@@ -17,14 +17,18 @@ public class PlayerRollState : PlayerBaseState
     {
         rollTimer += Time.deltaTime;
         if (!ctx.PlayerMov.isRolling)
+        {
             ctx.ChangeState(ctx.GroundedState);
+
+            // 只有當沒有要反擊的時候才需要關掉無敵幀
+            ctx.PlayerReact.OnAnimationEvent_SetInvincible(false);
+        }
     }
     public override void Exit()
     {
         ctx.PlayerMov.TriggerRootMotion(false);
         // 防止動畫被切斷
         ctx.PlayerMov.OnAnimationEvent_StopRoll();
-        ctx.PlayerReact.OnAnimationEvent_SetInvincible(false);
     }
     public override void HandleInput(PlayerCommand command)
     {

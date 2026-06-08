@@ -176,9 +176,9 @@ public class SwordCombat : MonoBehaviour, IWeapon
     {
         StartAttack(-1);
         counterAttackWindowEndTime = 0f;
-        StartCoroutine(WitchTimeRoutine());
+        StartCoroutine(CounterAttackTimeRoutine());
     }
-    IEnumerator WitchTimeRoutine()
+    IEnumerator CounterAttackTimeRoutine()
     {
         Time.timeScale = counterAttackSlowTime;
         yield return new WaitForSecondsRealtime(counterAttackDuration);

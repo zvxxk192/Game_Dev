@@ -10,6 +10,7 @@ public class PauseMenuRouter : MonoBehaviour
     {
         public Button tabButton;             
         public BaseUISequenceView contentView;
+        public ChangeTMPStyle changeTMPStyle;
     }
 
     [Header("Route Settings")]
@@ -27,17 +28,17 @@ public class PauseMenuRouter : MonoBehaviour
     }
 
     [Header("Custom Color Settings")]
-    [SerializeField] private Color hoverColor = new Color(1f, 1f, 1f, 0.8f);
+    [SerializeField] private Color hoverColor;
     public Color HoverColor
     {
         get => hoverColor;
     } 
-    [SerializeField] private Color unhoverColor = new Color(0.28f, 0.28f, 0.28f);
+    [SerializeField] private Color unhoverColor;
     public Color UnhoverColor
     {
         get => unhoverColor;
     }
-    [SerializeField] private Color activeColor = new Color(1f, 0.92f, 0.62f);
+    [SerializeField] private Color activeColor;
     public Color ActiveColor
     {
         get => activeColor;
@@ -73,8 +74,6 @@ public class PauseMenuRouter : MonoBehaviour
     {
         BaseUISequenceView targetPanel = tabs[newIndex].contentView;
 
-        if (targetPanel == currentOpenPanel) return;
-
         if (selectionIndicator != null)
         {
             // 抓取玩家點擊的那個按鈕的 Y 座標
@@ -87,17 +86,19 @@ public class PauseMenuRouter : MonoBehaviour
 
         // 關閉舊面板
         if (currentOpenPanel != null) currentOpenPanel.ClosePanel();
-        tabs[_oldIndex].tabButton.GetComponentInChildren<ChangeTMPStyle>().BtnInactive();
+        tabs[_oldIndex].changeTMPStyle.BtnInactive();
 
         // 打開新面板並更新資料
         targetPanel.OpenPanel();
-        tabs[newIndex].tabButton.GetComponentInChildren<ChangeTMPStyle>().BtnActive();
+        tabs[newIndex].changeTMPStyle.BtnActive();
         currentOpenPanel = targetPanel;
         _oldIndex = newIndex;
 
         // 實現第一個 (Consume) 的功能
         if (newIndex == 0)
+        {
             GameStateManager.Instance.ChangeState(GameStateManager.Instance.GamePlayingState);
+        }
 
         // 實現最後一個 (Quit) 的功能
         // Application.Quit();

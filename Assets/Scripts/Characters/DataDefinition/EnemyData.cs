@@ -5,7 +5,7 @@ public class EnemyData : ScriptableObject
 {
     [Header("Sense Setting")]
     public float LookRadius = 10f;  // 發現玩家的距離
-    public float AttackRadius = 2f; // 開始攻擊的距離
+    public float AttackRadius = 1f; // 開始攻擊的距離
 
     [Header("Move Setting")]
     public float BasePatrolSpeed = 1f;
@@ -28,8 +28,15 @@ public class EnemyData : ScriptableObject
     public float BasePoiseResetTime = 5f;
     public float BaseStaggerTime = 1f;
 
-    [Header("Scaling Curves (X: Level, Y: Magnification)")]
+    [Header("Loot Value")]
+    public int BaseLootGoldValue = 10;
+    public int BaseLootExpValue = 20;
+
+    [Header("Scaling Curves (X: Value, Y: Magnification)")]
     public AnimationCurve HealthScaleCurve;
     public AnimationCurve DamageScaleCurve;
     public AnimationCurve PoiseScaleCurve;
+
+    public AnimationCurve LootGoldScaleCurve;
+    public AnimationCurve LootExpScaleCurve;
 }

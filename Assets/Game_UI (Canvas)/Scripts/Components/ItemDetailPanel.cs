@@ -11,6 +11,10 @@ public class ItemDetailPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private Image iconImage;
 
+    [Header("Position Settings")]
+    [SerializeField] private RectTransform parentRect;
+    [SerializeField] private Vector3 offset;
+
     private RectTransform rectTransform;
 
     private void Awake()
@@ -21,18 +25,28 @@ public class ItemDetailPanel : MonoBehaviour
         rectTransform = GetComponent<RectTransform>();
         gameObject.SetActive(false);  // 預設關閉
     }
-    public void ShowInfo(InventoryItemData data, Vector3 slotPosition)
+    public void ShowInfo(InventoryItemData data, Vector3 targetWorldPosition)
     {
         if (data ==  null) return;
-
-        gameObject.SetActive(true);
 
         nameText.text = data.itemName;
         descriptionText.text = data.description;
         if (iconImage != null) iconImage.sprite = data.icon;
 
-        Vector2 targetPos = slotPosition + new Vector3(80f, 80f, 0f);
-        transform.position = targetPos; 
+        Vector3 localPos = parentRect.InverseTransformPoint(targetWorldPosition);
+        rectTransform.localPosition = localPos + offset;
+
+        // 因為有 ContentSizeFitter，需要先刷新 Layout 佈局
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+
+        // 再動態決定 Pivot 以保證不超過螢幕
+        float screenHalfWidth = Screen.width / 2f;
+        float screenHalfHeight = Screen.height / 2f;
+        float pivotX = (targetWorldPosition.x > screenHalfWidth) ? 1f : 0f;
+        float pivotY = (targetWorldPosition.y > screenHalfHeight) ? 1f : 0f;
+        rectTransform.pivot = new Vector2(pivotX, pivotY);
+
+        gameObject.SetActive(true);
     }
     public void HideInfo()
     {

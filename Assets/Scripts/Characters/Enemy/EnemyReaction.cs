@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 public class EnemyReaction : MonoBehaviour, IDamageable
 {
@@ -10,7 +9,7 @@ public class EnemyReaction : MonoBehaviour, IDamageable
     public GameObject lootPrefab;
 
     [Header("Enemy State")]
-    public bool isEnemyDead { get; private set; } = false;
+    public bool IsEnemyDead { get; private set; } = false;
 
     public Vector3 LastAttackerPos { get; private set; }
 
@@ -35,7 +34,7 @@ public class EnemyReaction : MonoBehaviour, IDamageable
     }
     public void TakeDamage(DamageInfo info)
     {
-        if (isEnemyDead) return;
+        if (IsEnemyDead) return;
 
         lastHitTime = Time.time;
         stats.CurrentHp -= info.Damage;
@@ -55,7 +54,7 @@ public class EnemyReaction : MonoBehaviour, IDamageable
     }
     public void InstantiateDeadLoot()
     {
-        isEnemyDead = true;
+        IsEnemyDead = true;
 
         if(lootPrefab != null)
         {

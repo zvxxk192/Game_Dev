@@ -38,8 +38,9 @@ public class PlayerReaction : MonoBehaviour, IDamageable
     public void OnAnimationEvent_SetInvincible(bool state)
     {
         IsInvincible = state;
-        if (!state) hasPerfectDodge = false;
+        if (!state) hasPerfectDodge = false;  // 防止重複
     }
+    //public void OnCompleteCounterAttack() => hasPerfectDodge = false; 
     public void TakeDamage(DamageInfo info)
     {
         if (isPlayerDead) return;
@@ -94,7 +95,6 @@ public class PlayerReaction : MonoBehaviour, IDamageable
         anim.CrossFade($"StandingReact{num}", 0.1f);
 
         ApplyKnockback(attackerPos);
-
     }
     void ApplyKnockback(Vector3 attackerPos)
     {
@@ -110,12 +110,13 @@ public class PlayerReaction : MonoBehaviour, IDamageable
     {
         isPlayerDead = true;
         Debug.Log($"{name} 已死亡!");
+
+        // 確保執行動畫採用動畫的位移
+        movement.TriggerRootMotion(true);
         anim.CrossFade("Death", 0.1f);
 
         if (col != null) col.enabled = false;
         if (input != null) input.SetInputEnabled(false);
         rb.isKinematic = true;
-
-        //GameStateManager.Instance.ChangeState(GameStateCommand.PlayerDead);
     }
 }

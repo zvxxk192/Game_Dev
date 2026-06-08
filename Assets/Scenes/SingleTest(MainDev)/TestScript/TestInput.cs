@@ -4,25 +4,14 @@ using UnityEngine.UI;
 
 public class TestInput : MonoBehaviour
 {
-    [SerializeField] private BaseUISequenceView pauseMenu;
+    [SerializeField] private BaseUISequenceView LoadingView;
 
-    public bool IsPauseMenuOpen { get; private set; } = false;
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            IsPauseMenuOpen = !IsPauseMenuOpen;
-        }
-        if (IsPauseMenuOpen)
-        {
-            pauseMenu.OpenPanel();
-            Time.timeScale = 0f;
-        }
-        else
-        {
-            pauseMenu.ClosePanel();
-            Time.timeScale = 1.0f;
+            LoadingView.OpenPanel();
         }
     }
 }

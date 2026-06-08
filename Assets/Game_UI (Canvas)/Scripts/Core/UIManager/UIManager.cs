@@ -16,7 +16,8 @@ public class UIManager : MonoBehaviour
     }
 
     [Header("已註冊的 UI WindowView 節點")]
-    [SerializeField] private WindowScaleView pauseWindow;
+    [SerializeField] private BaseUISequenceView pauseWindow;
+    [SerializeField] private BaseUISequenceView gameOverWindow;
 
     void Awake()
     {
@@ -43,12 +44,10 @@ public class UIManager : MonoBehaviour
     void HandleGameState(IGameState state)
     {
         if (state == GameStateManager.Instance.GamePausedState)
-        {
             pauseWindow.OpenPanel();
-        }
         else if (state == GameStateManager.Instance.GamePlayingState)
-        {
             pauseWindow.ClosePanel();
-        }
+        else if (state == GameStateManager.Instance.GameOverState)
+            gameOverWindow.OpenPanel();
     }
 }

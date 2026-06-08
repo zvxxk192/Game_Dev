@@ -7,4 +7,7 @@ public interface IInteractable
 
     // UI呼叫顯示文字
     string GetInteractPrompt();
+
+    // 互動按鍵
+    string Prompt {  get; }
 }

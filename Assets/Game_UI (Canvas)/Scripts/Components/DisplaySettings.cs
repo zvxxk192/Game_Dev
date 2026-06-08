@@ -9,7 +9,12 @@ public class DisplaySettings : MonoBehaviour
     [SerializeField] private TMP_Dropdown windowModeDropdown;
     [SerializeField] private TMP_Dropdown resolutionDropdown;
 
-    private List<Resolution> filterResolution = new List<Resolution>();
+    private List<Resolution> filterResolution;
+
+    private void Awake()
+    {
+        filterResolution = new List<Resolution>();
+    }
 
     private void Start()
     {

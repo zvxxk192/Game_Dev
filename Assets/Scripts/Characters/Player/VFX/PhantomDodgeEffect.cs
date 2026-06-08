@@ -7,10 +7,17 @@ public class PhantomDodgeEffect : MonoBehaviour
 {
     [Header("Phamtom Settings")]
     [SerializeField] private SkinnedMeshRenderer[] playerSMRList;
-    [SerializeField] private Material ghostMaterial;
     [SerializeField] private float fadeDuration = 2f;
 
+    [Header("Phantom SFX / VFX")]
+    [SerializeField] private Material ghostMaterial;
+    [SerializeField] private AudioEvent witchTimeSound;
+
     private PlayerEventsManager events;
+    List<Material> matInstances;
+
+    // 內部物件
+    GameObject ghostRoot;
 
     void Awake()
     {
@@ -27,20 +34,25 @@ public class PhantomDodgeEffect : MonoBehaviour
 
     void TriggerPhantom()
     {
-        StartCoroutine(SpawnAndFadeGhost());
+        // 音效
+        AudioManager.Instance.PlayAudioEvent(witchTimeSound);
+        // 動態殘影
+        SpawnGhost();
+        // 殘影淡出
+        StartCoroutine(FadeGhost());
     }
-    IEnumerator SpawnAndFadeGhost()
+    void SpawnGhost()
     {
         // 建立一個空的殘影物件，位置和旋轉與當前主角一模一樣
-        GameObject ghostRoot = new GameObject("PhantomGhost_Root");
+        ghostRoot = new GameObject("PhantomGhost_Root");
         ghostRoot.transform.position = transform.position;
         ghostRoot.transform.rotation = transform.rotation;
 
-        List<Material> matInstances = new List<Material>();
+        matInstances = new List<Material>();
 
-        foreach(var smr in playerSMRList)
+        foreach (var smr in playerSMRList)
         {
-            if(smr == null) continue;
+            if (smr == null) continue;
 
             GameObject partObj = new GameObject(smr.gameObject.name + "_Ghost");
             partObj.transform.SetParent(ghostRoot.transform);
@@ -64,7 +76,9 @@ public class PhantomDodgeEffect : MonoBehaviour
 
             Destroy(bakedMesh, fadeDuration + 0.1f);
         }
-
+    }
+    IEnumerator FadeGhost()
+    {
         // 漸隱動畫
         float elapsed = 0f;
         while (elapsed < fadeDuration)

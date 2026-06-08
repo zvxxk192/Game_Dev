@@ -3,22 +3,36 @@ using System;
 
 public class PlayerWallet : MonoBehaviour
 {
-    private PlayerStats stats;
+    [SerializeField] private PlayerEventsManager events;
+    [SerializeField] private PlayerStats stats;
+
+    private int currentGold = 0;
+    public int CurrentGold
+    {
+        get => currentGold;
+        set
+        {
+            if (value < 0) value = 0;
+            currentGold = value;
+            events.TriggerPlayerGoldChanged(CurrentGold);
+        }
+    }
 
     void Awake()
     {
+        events = GetComponent<PlayerEventsManager>();
         stats = GetComponent<PlayerStats>();
     }
     public void AddGold(int amount)
     {
-        stats.CurrentGold += amount;
-        Debug.Log($"{name} 獲得錢幣 ! 目前金幣數量 : {stats.CurrentGold}");
+        currentGold += amount;
+        Debug.Log($"{name} 獲得錢幣 ! 目前金幣數量 : {currentGold}");
     }
     public bool SpendGold(int amount)
     {
-        if(stats.CurrentGold > amount )
+        if(currentGold > amount )
         {
-            stats.CurrentGold -= amount;
+            currentGold -= amount;
             return true;
         }
         Debug.Log("金幣不足!");

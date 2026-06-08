@@ -3,18 +3,19 @@ using UnityEngine;
 public class HomingLoot : MonoBehaviour
 {
     [Header("Loot Settings")]
-    public int goldValue = 10;
-    public int expValue = 20;
+    [SerializeField] private EnemyStats stats;
+    [SerializeField] private PlayerWallet wallet;
+    [SerializeField] private PlayerLeveling leveling;
 
     [Header("Magnet Settings")]
-    public float magnetRadius = 8f;
-    public float flySpeed = 15f;
-    public float collectDistance = 1f;
+    [SerializeField] private float magnetRadius = 8f;
+    [SerializeField] private float flySpeed = 15f;
+    [SerializeField] private float collectDistance = 1f;
 
     private Transform targetPlayer;
     private bool isSucking = false;
 
-    void Update()
+    private void Update()
     {
         if (!isSucking)
         {
@@ -38,13 +39,13 @@ public class HomingLoot : MonoBehaviour
             }
         }
     }
-    void CollectLoot()
+    private void CollectLoot()
     {
-        PlayerWallet wallet = targetPlayer.GetComponent<PlayerWallet>();
-        if (wallet != null) wallet.AddGold(goldValue);
+        wallet = targetPlayer.GetComponent<PlayerWallet>();
+        leveling = targetPlayer.GetComponent<PlayerLeveling>();
 
-        PlayerLeveling leveling = targetPlayer.GetComponent<PlayerLeveling>();
-        if (leveling != null) leveling.AddExp(expValue);
+        if (wallet != null) wallet.AddGold(stats.LootGoldValue);
+        if (leveling != null) leveling.AddExp(stats.LootExpValue);
 
         Destroy(gameObject);
     }

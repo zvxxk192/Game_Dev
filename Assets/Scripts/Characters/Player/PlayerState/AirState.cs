@@ -29,5 +29,10 @@ public class PlayerAirState : PlayerBaseState
         {
             ctx.ChangeState(ctx.GroundedState);
         }
+        if (airTimer >= 10f)
+        {
+            // 設定安全機制防止 bug
+            ctx.ChangeState(ctx.GroundedState);
+        }
     }
 }

@@ -12,12 +12,12 @@ public class EnemyGroundedState : EnemyBaseState
     {
         if (ctx.EnemyController == null || ctx.Data == null) return;
 
-        if (ctx.EnemyController.distSqr <= ctx.Data.AttackRadius * ctx.Data.AttackRadius)
+        if (ctx.EnemyController.DistSqr <= ctx.Data.AttackRadius * ctx.Data.AttackRadius)
         {
             // ª¬ºA¤@ : §ðÀ»
             ctx.ChangeState(ctx.AttackState);
         }
-        else if (ctx.EnemyController.distSqr <= ctx.Data.LookRadius * ctx.Data.LookRadius)
+        else if (ctx.EnemyController.DistSqr <= ctx.Data.LookRadius * ctx.Data.LookRadius)
         {
             // ª¬ºA¤G : °l³v
             ctx.EnemyController.RequestChasePlayer();

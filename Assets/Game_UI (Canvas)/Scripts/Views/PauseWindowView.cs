@@ -1,7 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class WindowScaleView : BaseUISequenceView
+public class PauseWindowView : BaseUISequenceView
 {
     [Header("視窗縮放設定")]
     [SerializeField] private RectTransform windowRect;

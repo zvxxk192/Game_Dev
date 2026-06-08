@@ -21,7 +21,5 @@ public class PlayerEventsManager : MonoBehaviour
     public event Action OnPerfectDodge;
 
     public void TriggerPerfectDodge()
-    {
-        OnPerfectDodge?.Invoke();
-    }
+        => OnPerfectDodge?.Invoke();
 }

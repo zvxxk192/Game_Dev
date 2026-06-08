@@ -14,8 +14,8 @@ public class PostProcessManager : MonoBehaviour
     private float _defaultCAIntensity = 0f;
 
     [Header("PerfectDodge Properties")]
-    [SerializeField] private float perfectDodgeFXIntensity = 1.0f;
-    [SerializeField] private float perfectDodgeFXDuration = 0.2f;
+    [SerializeField] private float perfectDodgeFXIntensity = 2f;
+    [SerializeField] private float perfectDodgeFXDuration = 1f;
 
     void Awake()
     {
@@ -50,7 +50,7 @@ public class PostProcessManager : MonoBehaviour
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            // 核心公式：Mathf.Lerp(起始值, 終點值, 進度百分比)
+
             _chromaticAberration.intensity.value = Mathf.Lerp(targetIntensity, _defaultCAIntensity, elapsed / duration);
             yield return null;
         }

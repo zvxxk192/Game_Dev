@@ -69,7 +69,7 @@ public class TargetLockSystem : MonoBehaviour
     {
         if (currentTarget != null)
         {
-            return currentTarget.GetComponent<EnemyReaction>().isEnemyDead;
+            return currentTarget.GetComponent<EnemyReaction>().IsEnemyDead;
         }
         return false;
     }

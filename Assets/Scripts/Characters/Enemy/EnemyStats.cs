@@ -3,7 +3,8 @@ using UnityEngine;
 public class EnemyStats : MonoBehaviour
 {
     [Header("Data Sources")]
-    public EnemyData enemyData;
+    [SerializeField] private EnemyData enemyData;
+    [SerializeField] private PlayerStats playerStats;
 
     private EnemyEventsManager events;
 
@@ -13,16 +14,16 @@ public class EnemyStats : MonoBehaviour
     }
 
     // SaveSystem.Loading()
-    [Header("Loading Value")]
-    private int currentLevel = 1;
+    [Header("Enemy Stats")]
     public int CurrentLevel
     {
-        get => currentLevel;
-        set
+        get
         {
-            if (value < 0) value = 0;
-            currentLevel = value;
-            events.TriggerEnemyLevelUp(currentLevel);
+            if (playerStats.CurrentLevel > 5)
+            {
+                return playerStats.CurrentLevel;
+            }
+            return 1;
         }
     }
     private float currentHp = 100f;
@@ -52,7 +53,7 @@ public class EnemyStats : MonoBehaviour
     {
         get
         {
-            float multiplier = enemyData.HealthScaleCurve.Evaluate(currentLevel);
+            float multiplier = enemyData.HealthScaleCurve.Evaluate(CurrentLevel);
             return enemyData.BaseMaxHp * multiplier;
         }
     }
@@ -78,7 +79,7 @@ public class EnemyStats : MonoBehaviour
     {
         get
         {
-            float multiplier = enemyData.DamageScaleCurve.Evaluate(currentLevel);
+            float multiplier = enemyData.DamageScaleCurve.Evaluate(CurrentLevel);
             return enemyData.BaseDamage * multiplier;
         }
     }
@@ -102,7 +103,7 @@ public class EnemyStats : MonoBehaviour
     {
         get
         {
-            float multiplier = enemyData.PoiseScaleCurve.Evaluate(currentLevel);
+            float multiplier = enemyData.PoiseScaleCurve.Evaluate(CurrentLevel);
             return enemyData.BaseMaxPoise * multiplier;
         }
     }
@@ -118,6 +119,24 @@ public class EnemyStats : MonoBehaviour
         get
         {
             return enemyData.BaseStaggerTime;
+        }
+    }
+
+    [Header("Loot Stats")]
+    public int LootGoldValue
+    {
+        get
+        {
+            float multiplier = enemyData.LootGoldScaleCurve.Evaluate(CurrentLevel);
+            return (int)(enemyData.BaseLootGoldValue * multiplier);
+        }
+    }
+    public int LootExpValue
+    {
+        get
+        {
+            float multiplier = enemyData.LootExpScaleCurve.Evaluate(CurrentLevel);
+            return (int)(enemyData.BaseLootExpValue * multiplier);
         }
     }
 }

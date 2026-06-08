@@ -69,7 +69,7 @@ public class InventorySlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         if (currentItem == null) return;
 
-        ItemDetailPanel.Instance.ShowInfo(CurrentItem, transform.position);
+        ItemDetailPanel.Instance.ShowInfo(CurrentItem, rectTransform.position);
     }
     // ¡Ù¬√∞TÆß
     public void OnPointerExit(PointerEventData eventData)

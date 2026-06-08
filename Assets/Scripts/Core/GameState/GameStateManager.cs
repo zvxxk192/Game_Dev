@@ -21,6 +21,7 @@ public class GameStateManager : MonoBehaviour
 
     public GamePausedState GamePausedState { get; private set; }
     public GamePlayingState GamePlayingState { get; private set; }
+    public GameOverState GameOverState { get; private set; }
 
     public event Action<IGameState> OnGameStateChanged;
 
@@ -31,6 +32,7 @@ public class GameStateManager : MonoBehaviour
 
         GamePausedState = new GamePausedState(this);
         GamePlayingState = new GamePlayingState(this);
+        GameOverState = new GameOverState(this);
     }
     private void OnEnable()
     {

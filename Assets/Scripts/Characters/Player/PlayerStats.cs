@@ -20,17 +20,6 @@ public class PlayerStats : MonoBehaviour
             events.TriggerPlayerLevelUp(currentLevel);
         }
     }
-    private int currentGold = 0;
-    public int CurrentGold
-    {
-        get => currentGold;
-        set
-        {
-            if (value < 0) value = 0;
-            currentGold = value; 
-            events.TriggerPlayerGoldChanged(CurrentGold);
-        }
-    }
     private int currentExp = 0;
     public int CurrentExp
     {
@@ -39,6 +28,11 @@ public class PlayerStats : MonoBehaviour
         {
             if (value < 0) value = 0;
             currentExp = value;
+            //if (currentExp >= ExpToNextLevel)
+            //{
+            //    currentExp -= ExpToNextLevel;
+            //    CurrentLevel++;
+            //}
             events.TriggerPlayerExpChanged(currentExp, ExpToNextLevel);
         }
     }

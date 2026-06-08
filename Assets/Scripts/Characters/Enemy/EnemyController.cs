@@ -5,8 +5,8 @@ using System.Collections;
 public class EnemyController : MonoBehaviour
 {
     [Header("Enemy State")]
-    public bool isWaiting { get; private set; } = false;          // 是否正在發呆中
-    public bool isStaggered { get; private set; } = false;
+    public bool IsWaiting { get; private set; } = false;          // 是否正在發呆中
+    public bool IsStaggered { get; private set; } = false;
 
     [Header("Data Source")]
     public EnemyData data;
@@ -25,7 +25,7 @@ public class EnemyController : MonoBehaviour
     private EnemyEventsManager events;
     private EnemyStateMachine stateMachine;
 
-    public float distSqr { get; private set; } = 0f;
+    public float DistSqr { get; private set; } = float.MaxValue;
 
     private int currentWaypointIndex = 0;   // 目前走到第幾個點
 
@@ -53,11 +53,11 @@ public class EnemyController : MonoBehaviour
     }
     void Update()
     {
-        distSqr = (Player.position - transform.position).sqrMagnitude;
+        DistSqr = (Player.position - transform.position).sqrMagnitude;
     }
     public void RequestChasePlayer()
     {
-        isWaiting = false;
+        IsWaiting = false;
         agent.isStopped = false;
         agent.speed = stats.ChaseSpeed;
         agent.SetDestination(Player.position);
@@ -68,7 +68,7 @@ public class EnemyController : MonoBehaviour
         if (waypoints.Length == 0) return;
 
         agent.speed = stats.PatrolSpeed;
-        if (isWaiting)
+        if (IsWaiting)
         {
             UpdateAnimation();
             return;
@@ -96,10 +96,10 @@ public class EnemyController : MonoBehaviour
     }
     IEnumerator WaitAndMoveToNext()
     {
-        isWaiting = true;
+        IsWaiting = true;
         agent.isStopped = true;
         yield return new WaitForSeconds(data.PatrolWaitTime);
-        isWaiting = false;
+        IsWaiting = false;
         agent.isStopped = false;
         currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
         agent.SetDestination(waypoints[currentWaypointIndex].position);
@@ -107,9 +107,9 @@ public class EnemyController : MonoBehaviour
 
     public void RequestStagger(Vector3 attackerPos)
     {
-        if (isStaggered) return;
+        if (IsStaggered) return;
 
-        isStaggered = true;
+        IsStaggered = true;
         agent.isStopped = true;
         agent.velocity = Vector3.zero;
 
@@ -123,9 +123,7 @@ public class EnemyController : MonoBehaviour
         // 擊退 (反方向)
         rb.AddForce(-dir * stats.KnockbackForce + Vector3.up * 5f, ForceMode.Impulse);
 
-        //yield return new WaitForSeconds(stats.StaggerTime);
-
-        isStaggered = false;
+        IsStaggered = false;
         agent.isStopped = false;
     }
     public void RequestDie()

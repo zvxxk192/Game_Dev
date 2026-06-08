@@ -13,11 +13,12 @@ public abstract class BaseUISequenceView : MonoBehaviour
     [SerializeField] protected Ease openEase = Ease.OutCubic;
     [SerializeField] protected Ease closeEase = Ease.InCubic;
 
-    public bool IsOpen { get; private set; }
+    public bool IsOpen { get; private set; } = false;
 
     protected virtual void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
+        canvasGroup.alpha = 0f;
     }
 
     /// <summary>
@@ -33,6 +34,10 @@ public abstract class BaseUISequenceView : MonoBehaviour
 
         // 顯示基本設定（允許點擊）
         gameObject.SetActive(true);
+
+        // 關閉互動，防止玩家在淡入時亂點
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
 
         currentSequence = DOTween.Sequence().SetLink(gameObject).SetUpdate(true);
 
