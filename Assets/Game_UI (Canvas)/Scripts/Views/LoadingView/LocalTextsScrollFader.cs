@@ -44,9 +44,6 @@ public class LocalTextsScrollFader : MonoBehaviour
         // Awake 可能沒讀到
         RecordBasePosition();
 
-        // 重置
-        isTextA_Active = false;
-
         // 先把兩個文字都變透明
         ResetText(textA);
         ResetText(textB);
@@ -55,7 +52,6 @@ public class LocalTextsScrollFader : MonoBehaviour
         textA.text = tips[currentIndex];
         textA.color = new Color(1, 1, 1, 1);
         textA.rectTransform.anchoredPosition = basePosition;
-        Debug.Log(basePosition);
 
         loopCoroutine = StartCoroutine(TipLoopRoutine());
     }
@@ -96,11 +92,11 @@ public class LocalTextsScrollFader : MonoBehaviour
             Sequence seq = DOTween.Sequence().SetUpdate(true).SetLink(gameObject);
 
             // 舊文字：往上移動 + 淡出
-            seq.Join(currentText.rectTransform.DOAnchorPos(basePosition + transitionOffset, fadeDuration).SetRelative().SetEase(Ease.InOutSine));
+            seq.Join(currentText.rectTransform.DOAnchorPos(basePosition + transitionOffset, fadeDuration).SetEase(Ease.InOutSine));
             seq.Join(currentText.DOFade(0f, fadeDuration));
 
             // 新文字：從下方回到正中間並淡入
-            seq.Join(nextText.rectTransform.DOAnchorPos(basePosition, fadeDuration).SetRelative().SetEase(Ease.OutBack));
+            seq.Join(nextText.rectTransform.DOAnchorPos(basePosition, fadeDuration).SetEase(Ease.OutBack));
             seq.Join(nextText.DOFade(1f, fadeDuration));
 
             // 等待這段超帥的動畫播完
