@@ -23,10 +23,12 @@ public class HealthBarUI : MonoBehaviour
     }
     private void OnEnable()
     {
-        events.OnPlayerHpChanged += HandleHealthBarChanged;
+        if (events != null)
+            events.OnPlayerHpChanged += HandleHealthBarChanged;
     }
     private void OnDisable()
     {
+        if (events != null)
         events.OnPlayerHpChanged -= HandleHealthBarChanged;
     }
 

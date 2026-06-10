@@ -27,7 +27,7 @@ public class DeathWindowView : BaseUISequenceView
     }
     protected override void OnBuildOpenSequence(Sequence seq)
     {
-        seq.Append(gameOverTitle.DOFontSize(100, titleFadeDuration).SetEase(openEase));
+        seq.Append(gameOverTitle.DOFontSize(160, titleFadeDuration).SetEase(openEase));
 
         seq.Append(respawnBtnCanvas.DOFade(1f, respawnBtnFadeDuration));
 

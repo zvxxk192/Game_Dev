@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
+[Pausable]
 public class EnemyController : MonoBehaviour
 {
     [Header("Enemy State")]

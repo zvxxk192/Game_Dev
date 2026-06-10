@@ -2,6 +2,8 @@
 public enum GameStateCommand
 {
     Playing,
-    PlayerDead,
-    Paused
+    Paused,
+    GameOver,
+    Loading,
+    MainMenu
 }

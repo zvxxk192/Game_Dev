@@ -9,11 +9,11 @@ public class RespawnBtn : MonoBehaviour, IPointerUpHandler, IPointerEnterHandler
     [SerializeField] private float respawnTextLoopDuration = 0.5f;
     [SerializeField] private TextMeshProUGUI respawnText;
     [SerializeField] private Image respawnIcon;
-    [SerializeField] private RespawnScene respawnScene;
+    private RespawnScene respawnScene;
 
-    public void Awake()
+    private void Awake()
     {
-        respawnScene = GetComponent<RespawnScene>();
+        respawnScene = GlobalUIManager.Instance.RespawnSceneApi;
     }
     public void OnPointerEnter(PointerEventData eventData)
     {

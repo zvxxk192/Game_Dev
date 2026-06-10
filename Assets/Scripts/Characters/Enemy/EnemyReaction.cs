@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[Pausable]
 public class EnemyReaction : MonoBehaviour, IDamageable
 {
     [Header("Data Sources")]

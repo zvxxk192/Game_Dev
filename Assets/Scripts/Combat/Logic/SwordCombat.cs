@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections;
 
+[Pausable]
 public class SwordCombat : MonoBehaviour, IWeapon
 {
     [Header("Data Sources")]

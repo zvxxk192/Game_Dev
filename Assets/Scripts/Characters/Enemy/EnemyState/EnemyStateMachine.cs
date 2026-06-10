@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[Pausable]
 public class EnemyStateMachine : MonoBehaviour
 {
     [Header("Data Source")]
@@ -31,7 +32,10 @@ public class EnemyStateMachine : MonoBehaviour
 
         ChangeState(GroundedState);
     }
-    void Update() => CurrentState?.Tick();
+    void Update()
+    {
+        CurrentState?.Tick();
+    }
 
     public void ChangeState(IEnemyState newState)
     {

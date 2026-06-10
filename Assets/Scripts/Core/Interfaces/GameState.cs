@@ -7,10 +7,10 @@ public interface IGameState
 
 public abstract class GameBaseState : IGameState
 {
-    protected GameStateManager ctx;
-    public GameBaseState(GameStateManager stateMachine)
+    protected GameContext ctx;
+    public GameBaseState(GameContext gameContext)
     {
-        this.ctx = stateMachine;
+        this.ctx = gameContext;
     }
 
     public virtual void Enter() { }

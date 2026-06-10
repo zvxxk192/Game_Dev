@@ -2,6 +2,7 @@ using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections.Generic;
 
+[Pausable]
 public class TargetLockSystem : MonoBehaviour
 {
     [Header("References")]

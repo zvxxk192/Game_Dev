@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[Pausable]
 public class PlayerInput : MonoBehaviour
 {
     private PlayerMovement playerMov;
@@ -90,7 +91,7 @@ public class PlayerInput : MonoBehaviour
                 return;
             }
 
-            // 如果目前暫停，則關閉 UIManager 堆頂的子頁面
+            // 如果目前暫停，則關閉 PauseMenu
             if (GameStateManager.Instance.CurrentState == GameStateManager.Instance.GamePausedState)
             {   
                 GameStateManager.Instance.ChangeState(GameStateManager.Instance.GamePlayingState);

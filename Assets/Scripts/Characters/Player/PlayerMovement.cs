@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 
+[Pausable]
 public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]

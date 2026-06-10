@@ -11,9 +11,6 @@ public class SceneLoader : MonoBehaviour
     [SerializeField] private Slider progressBar;
     [SerializeField] private TextMeshProUGUI progressPercent;
 
-    [Header("Loading Settings")]
-    [SerializeField] private float minLoadingTime;
-
     private void Awake()
     {
         // 為跨場景加載物件
@@ -28,23 +25,27 @@ public class SceneLoader : MonoBehaviour
         GameEvents.OnRequestSceneLoad -= LoadScene;
     }
 
-    private void LoadScene(int sceneIndex)
+    private void LoadScene(string sceneName)
     {
         // 在場景加載前的前置作業
-        UIManager.Instance.PrepareForSceneChange();
-        StartCoroutine(LoadSceneRoutine(sceneIndex));
+        if (GlobalUIManager.Instance != null)
+            GlobalUIManager.Instance.PrepareForSceneChange();
+        StartCoroutine(LoadSceneRoutine(sceneName));
     }
-    private IEnumerator LoadSceneRoutine(int sceneIndex)
+    private IEnumerator LoadSceneRoutine(string sceneName)
     {
-        // 確保不受死亡畫面等暫停時間的 View 影響，恢復時間並開始淡入
-        Time.timeScale = 1.0f;
+        // 宣告開始載入，以通知 UIManager 關閉現在的頁面
+        if (GameStateManager.Instance  != null)
+            GameStateManager.Instance.ChangeState(GameStateManager.Instance.GameLoadingState);
+
+        // 開啟載入頁面
         loadingView.OpenPanel();
 
         // 等待淡入動畫播完
-        yield return new WaitForSecondsRealtime(loadingView.FadeDuration);
+        yield return new WaitForSecondsRealtime(loadingView.InFadeDuration);
 
         // 開始異步加載場景
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneIndex);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
         // 阻止場景讀取完畢後馬上切換
         asyncLoad.allowSceneActivation = false;
@@ -66,13 +67,21 @@ public class SceneLoader : MonoBehaviour
             yield return null;
         }
 
-        // 在場景加載完後開始加載物件
+        // 在場景加載完後開始加載全域「局部依賴」的物件
         PlayingWorldSceneContext currentContext = Object.FindFirstObjectByType<PlayingWorldSceneContext>();
-        // 傳給中央頭腦
-        if (UIManager.Instance != null)
-            UIManager.Instance.InitializeNewScene(currentContext);
 
-        // 淡出
+        // 傳給中央頭腦
+        if (GlobalUIManager.Instance != null)
+            GlobalUIManager.Instance.InitializeNewScene(currentContext);
+
+        // 宣告加載狀態完畢，以通知 UIManager 初始化
+        if (GameStateManager.Instance != null)
+            GameStateManager.Instance.ChangeState(GameStateManager.Instance.GamePlayingState);
+
+        // 關閉載入頁面
         loadingView.ClosePanel();
+
+        //加個緩衝防止 Bug
+        yield return new WaitForSecondsRealtime(1);
     }
 }

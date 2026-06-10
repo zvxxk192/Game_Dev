@@ -1,5 +1,6 @@
  using UnityEngine;
 
+[Pausable]
 public class PlayerVisuals : MonoBehaviour
 {
     private Animator anim;

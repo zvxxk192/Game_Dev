@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[Pausable]
 public class HomingLoot : MonoBehaviour
 {
     [Header("Loot Settings")]

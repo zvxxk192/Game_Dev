@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class LoadingView : BaseUISequenceView
 {
-    public float FadeDuration => fadeDuration;
+    public float InFadeDuration => inFadeDuration;
+    public float OutFadeDuration => outFadeDuration;
 
     [Header("UI Element")]
     [SerializeField] private RectTransform silderHandleRect;

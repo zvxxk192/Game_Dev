@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[Pausable]
 public class PlayerStateMachine : MonoBehaviour
 {    
     public IPlayerState CurrentState { get; private set; }
@@ -34,8 +35,14 @@ public class PlayerStateMachine : MonoBehaviour
 
         ChangeState(GroundedState);
     }
-    void Update() => CurrentState?.Tick();
-    void FixedUpdate() => CurrentState?.FixedTick();
+    void Update() 
+    {
+        CurrentState?.Tick();
+    }
+    void FixedUpdate()
+    {
+        CurrentState?.FixedTick();
+    }
 
     public void ChangeState(IPlayerState newState)
     {

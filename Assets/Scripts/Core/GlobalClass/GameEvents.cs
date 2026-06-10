@@ -2,7 +2,7 @@ using System;
 
 public static class GameEvents
 {
-    public static Action<int> OnRequestSceneLoad;
+    public static Action<string> OnRequestSceneLoad;
 
     // 其他跨系統事件
 }

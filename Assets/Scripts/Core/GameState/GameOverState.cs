@@ -1,7 +1,7 @@
 
 public class GameOverState : GameBaseState
 {
-    public GameOverState(GameStateManager stateMachine) : base(stateMachine) { }
+    public GameOverState(GameContext gameContext) : base(gameContext) { }
 
     public override void Enter()
     {

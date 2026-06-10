@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[Pausable]
 public class PlayerInteractor : MonoBehaviour
 {
     [Header("Interact Settings")]

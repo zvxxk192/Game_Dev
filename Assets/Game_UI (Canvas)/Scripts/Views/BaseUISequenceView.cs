@@ -9,7 +9,8 @@ public abstract class BaseUISequenceView : MonoBehaviour
 
     [Header("UI 基礎設定")]
     [SerializeField] protected float bufferDuration = 0.2f;  // 防止動畫執行期間亂點
-    [SerializeField] protected float fadeDuration = 0.4f;
+    [SerializeField] protected float inFadeDuration = 0.4f;
+    [SerializeField] protected float outFadeDuration = 0.4f;
     [SerializeField] protected Ease openEase = Ease.OutCubic;
     [SerializeField] protected Ease closeEase = Ease.InCubic;
 
@@ -42,7 +43,7 @@ public abstract class BaseUISequenceView : MonoBehaviour
         currentSequence = DOTween.Sequence().SetLink(gameObject).SetUpdate(true);
 
         // 淡入
-        currentSequence.Append(canvasGroup.DOFade(1f, fadeDuration).SetEase(openEase));
+        currentSequence.Append(canvasGroup.DOFade(1f, inFadeDuration).SetEase(openEase));
 
         // 讓子類別去塞入自己專屬的動畫
         OnBuildOpenSequence(currentSequence);
@@ -72,7 +73,7 @@ public abstract class BaseUISequenceView : MonoBehaviour
         currentSequence = DOTween.Sequence().SetLink(gameObject).SetUpdate(true);
 
         // 淡出
-        currentSequence.Append(canvasGroup.DOFade(0f, fadeDuration).SetEase(closeEase));
+        currentSequence.Append(canvasGroup.DOFade(0f, outFadeDuration).SetEase(closeEase));
 
         // 子類別專屬的關閉動畫
         OnBuildCloseSequence(currentSequence);
