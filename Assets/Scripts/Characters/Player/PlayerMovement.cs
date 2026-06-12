@@ -21,32 +21,47 @@ public class PlayerMovement : MonoBehaviour
 
     private Transform lockOnTarget;
 
-    [Header("Physical Stats")]
+    [Header("Physical Settings")]
     [SerializeField] private float gravity = -9.8f;
     [SerializeField] private float jumpHeight = 1.5f;
-    [SerializeField] private float groundDistance = 0.4f;  // 腳底的隱形球半徑
+    [SerializeField] private float groundDistance = 0.45f;  // 腳底的隱形球半徑
     [SerializeField] private float turnSmoothTime = 0.1f;
-    public LayerMask groundMask;         
-    public Transform groundCheck;        
+    [SerializeField] private Vector3 groundCheckOffset;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private CapsuleCollider capsuleCollider;
 
     public float CurrentSpeedMagnitude { get; private set; }
 
     public event Action OnJumpTriggered;
     public event Action OnRollTriggered;
 
+    //private Vector3 initialCapsuleColliderCenter;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         stats = GetComponent<PlayerStats>();
         input = GetComponent<PlayerInput>();
+
+        //initialCapsuleColliderCenter = capsuleCollider.center;
     }
     void Update()
     {
         CheckGround();
+        CheckRigidbodyGravity();
     }
     void CheckGround()
+        => isGrounded = Physics.CheckSphere(groundCheck.position + groundCheckOffset, groundDistance, groundMask);
+    void CheckRigidbodyGravity()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        if (input.Direction == Vector3.zero && isGrounded && rb.linearVelocity.y < 0.01f)
+        {
+            rb.useGravity = false;
+            rb.linearVelocity = Vector3.zero;
+        }
+        else
+            rb.useGravity = true;
     }
     
     public void RequestJump()
@@ -130,5 +145,34 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
         }
+    }
+
+    public void ResizeCollider(float targetHeight)
+    {
+        capsuleCollider.height = targetHeight;
+        capsuleCollider.center = new Vector3(0, (targetHeight / 2f) - 1f, 0);
+
+        Vector3 topPoint = transform.position + capsuleCollider.center + Vector3.up * (targetHeight / 2f - capsuleCollider.radius);
+        Vector3 bottomPoint = transform.position + capsuleCollider.center + Vector3.down * (targetHeight / 2f - capsuleCollider.radius);
+
+        Collider[] overlappedColliders = Physics.OverlapCapsule(topPoint, bottomPoint, capsuleCollider.radius, groundMask);
+
+        foreach (var otherCollider in overlappedColliders)
+        {
+            if (Physics.ComputePenetration(
+                capsuleCollider, transform.position, transform.rotation,
+                otherCollider, otherCollider.transform.position, otherCollider.transform.rotation,
+                out Vector3 direction, out float distance))
+            {
+                transform.position += direction * distance;
+                rb.angularVelocity = Vector3.zero;
+            }
+        }
+    }
+
+    public void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
     }
 }

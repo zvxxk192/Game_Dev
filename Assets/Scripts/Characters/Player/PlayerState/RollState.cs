@@ -12,6 +12,8 @@ public class PlayerRollState : PlayerBaseState
         rollTimer = 0f;
         ctx.PlayerMov.TriggerRootMotion(true);
         ctx.PlayerMov.RequestRoll();
+        // 防止走斜坡會飄起來
+        ctx.PlayerMov.ResizeCollider(1f);
     }
     public override void Tick()
     {
@@ -27,8 +29,8 @@ public class PlayerRollState : PlayerBaseState
     public override void Exit()
     {
         ctx.PlayerMov.TriggerRootMotion(false);
-        // 防止動畫被切斷
-        ctx.PlayerMov.OnAnimationEvent_StopRoll();
+        ctx.PlayerMov.OnAnimationEvent_StopRoll();  // 防止動畫被切斷
+        ctx.PlayerMov.ResizeCollider(2f); // 恢復
     }
     public override void HandleInput(PlayerCommand command)
     {
