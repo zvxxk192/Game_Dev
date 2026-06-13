@@ -9,6 +9,10 @@ public class PlayerAirState : PlayerBaseState
 
     public PlayerAirState(PlayerStateMachine stateMachine) : base(stateMachine) { }
 
+    public override void Enter()
+    {
+        ctx.PlayerMov.RequestJump();
+    }
     public override void Exit()
     {
         hasLeftGround = false;
@@ -29,7 +33,7 @@ public class PlayerAirState : PlayerBaseState
         {
             ctx.ChangeState(ctx.GroundedState);
         }
-        if (airTimer >= 10f)
+        if (airTimer >= 5f)
         {
             // 設定安全機制防止 bug
             ctx.ChangeState(ctx.GroundedState);

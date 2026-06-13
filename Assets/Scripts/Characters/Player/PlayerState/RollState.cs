@@ -10,10 +10,9 @@ public class PlayerRollState : PlayerBaseState
     public override void Enter()
     {
         rollTimer = 0f;
+        ctx.PlayerMov.SetDisplacementEnabled(true);
         ctx.PlayerMov.TriggerRootMotion(true);
         ctx.PlayerMov.RequestRoll();
-        // 防止走斜坡會飄起來
-        ctx.PlayerMov.ResizeCollider(1f);
     }
     public override void Tick()
     {
@@ -28,9 +27,9 @@ public class PlayerRollState : PlayerBaseState
     }
     public override void Exit()
     {
+        ctx.PlayerMov.SetDisplacementEnabled(false);
         ctx.PlayerMov.TriggerRootMotion(false);
         ctx.PlayerMov.OnAnimationEvent_StopRoll();  // 防止動畫被切斷
-        ctx.PlayerMov.ResizeCollider(2f); // 恢復
     }
     public override void HandleInput(PlayerCommand command)
     {

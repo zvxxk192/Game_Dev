@@ -25,7 +25,6 @@ public class PlayerGroundedState : PlayerBaseState
                 ctx.ChangeState(ctx.RollState);
                 break;
             case PlayerCommand.Jump:
-                ctx.PlayerMov.RequestJump();
                 ctx.ChangeState(ctx.AirState);
                 break;
         }

@@ -125,7 +125,7 @@ public class SwordCombat : MonoBehaviour, IWeapon
     void SetAttackState(bool attacking)
     {
         isAttacking = attacking;
-        movementScript.SetMovementEnabled(!attacking);
+        movementScript.SetDisplacementEnabled(attacking);
     }
 
     void DetectHit()

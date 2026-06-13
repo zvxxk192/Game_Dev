@@ -15,7 +15,6 @@ public class PlayerReaction : MonoBehaviour, IDamageable
     public float perfectDodgeDuration = 0.01f;
     private bool hasPerfectDodge = false;  // 保證只觸發一次
 
-    private PlayerMovement movement;
     private Animator anim;
     private Collider col;
     private Rigidbody rb;
@@ -30,7 +29,6 @@ public class PlayerReaction : MonoBehaviour, IDamageable
         col = GetComponent<Collider>();
         rb = GetComponent<Rigidbody>();
         input = GetComponent<PlayerInput>();
-        movement = GetComponent<PlayerMovement>();
         stats = GetComponent<PlayerStats>();
         stateMachine = GetComponent<PlayerStateMachine>();
         events = GetComponent<PlayerEventsManager>();
@@ -111,8 +109,6 @@ public class PlayerReaction : MonoBehaviour, IDamageable
         isPlayerDead = true;
         Debug.Log($"{name} 已死亡!");
 
-        // 確保執行動畫採用動畫的位移
-        movement.TriggerRootMotion(true);
         anim.CrossFade("Death", 0.1f);
 
         if (col != null) col.enabled = false;

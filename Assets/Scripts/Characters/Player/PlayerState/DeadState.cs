@@ -1,4 +1,5 @@
 using UnityEngine;
+using static Coffee.UIExtensions.UIParticleAttractor;
 
 public class PlayerDeadState : PlayerBaseState
 {
@@ -11,6 +12,9 @@ public class PlayerDeadState : PlayerBaseState
     {
         deadTimer = 0f;
 
+        // 確保執行動畫採用動畫的位移
+        ctx.PlayerMov.TriggerRootMotion(true);
+        ctx.PlayerMov.SetDisplacementEnabled(true);
         ctx.PlayerReact.RequestDie();
     }
     public override void Tick()

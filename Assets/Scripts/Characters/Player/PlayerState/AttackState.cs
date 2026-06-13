@@ -10,6 +10,7 @@ public class PlayerAttackState : PlayerBaseState
     public override void Enter()
     {
         ctx.PlayerMov.TriggerRootMotion(true);
+        ctx.PlayerMov.SetDisplacementEnabled(true);
 
         if (ctx.WeaponController.currentWeapon != null)
             ctx.WeaponController.currentWeapon.RequestAttack();
@@ -17,8 +18,12 @@ public class PlayerAttackState : PlayerBaseState
     public override void Exit()
     {
         attackTimer = 0f;
+        ctx.WeaponController.currentWeapon.InterruptAttack();
+
         ctx.PlayerMov.TriggerRootMotion(false);
+        ctx.PlayerMov.SetDisplacementEnabled(false);
     }
+
     public override void Tick()
     {
         attackTimer += Time.deltaTime;
@@ -27,7 +32,9 @@ public class PlayerAttackState : PlayerBaseState
             ctx.LockSystem.FaceTargetWhenAttack();
 
         if (!ctx.WeaponController.currentWeapon.IsAttacking)
+        {
             ctx.ChangeState(ctx.GroundedState);
+        }
     }
     public override void HandleInput(PlayerCommand command)
     {

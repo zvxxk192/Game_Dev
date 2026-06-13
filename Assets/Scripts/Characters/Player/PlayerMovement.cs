@@ -5,17 +5,18 @@ using System;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
-    public Transform cam;
-    public Animator anim;
-    private Rigidbody rb;
-    private PlayerStats stats;
-    private PlayerInput input;
+    [SerializeField] private Transform cam;
+    [SerializeField] private Animator anim;
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private PlayerStats stats;
+    [SerializeField] private PlayerInput input;
+    [SerializeField] private PlayerStateMachine stateMachine;
 
     private float turnSmoothVelocity;
 
     [Header("States")]
     public bool isLockedOn { get; private set; } = false;
-    public bool canMove { get; private set; } = true;
+    //public bool canMove { get; private set; } = true;
     public bool isRolling { get; private set; } = false;
     public bool isGrounded { get; private set; } = true;
 
@@ -29,39 +30,52 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Vector3 groundCheckOffset;
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private Transform groundCheck;
-    [SerializeField] private CapsuleCollider capsuleCollider;
 
     public float CurrentSpeedMagnitude { get; private set; }
 
     public event Action OnJumpTriggered;
     public event Action OnRollTriggered;
 
-    //private Vector3 initialCapsuleColliderCenter;
-
     void Awake()
     {
-        rb = GetComponent<Rigidbody>();
-        stats = GetComponent<PlayerStats>();
-        input = GetComponent<PlayerInput>();
-
-        //initialCapsuleColliderCenter = capsuleCollider.center;
+        if (anim == null)
+            anim = GetComponent<Animator>();
+        if (rb == null)
+            rb = GetComponent<Rigidbody>();
+        if (stats == null)
+            stats = GetComponent<PlayerStats>();
+        if (input == null)
+            input = GetComponent<PlayerInput>();
+        if (stateMachine == null)
+            stateMachine = GetComponent<PlayerStateMachine>();
     }
     void Update()
     {
         CheckGround();
-        CheckRigidbodyGravity();
+
+        GroundSnapping();
     }
     void CheckGround()
         => isGrounded = Physics.CheckSphere(groundCheck.position + groundCheckOffset, groundDistance, groundMask);
-    void CheckRigidbodyGravity()
+    void GroundSnapping()
     {
-        if (input.Direction == Vector3.zero && isGrounded && rb.linearVelocity.y < 0.01f)
+        if (stateMachine.CurrentState == stateMachine.AirState) return;
+
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, groundMask))
         {
-            rb.useGravity = false;
-            rb.linearVelocity = Vector3.zero;
+            float targetY = hit.point.y + 1;
+
+            if (!isGrounded)
+            {
+                // 強行拉回原位
+                rb.position = new Vector3(rb.position.x, targetY, rb.position.z);
+
+                // 只有當速度還向上時才把他抹零
+                if (rb.linearVelocity.y > 0)
+                    rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+            }
         }
-        else
-            rb.useGravity = true;
+
     }
     
     public void RequestJump()
@@ -84,6 +98,9 @@ public class PlayerMovement : MonoBehaviour
     {
         if (input.InputMagnitude >= 0.1f)
         {
+            // 開始可以移動
+            SetDisplacementEnabled(true);
+
             // 計算目標角度 (Atan2(x, z) 轉成度數) + 相機目前的旋轉角度
             float targetAngle = Mathf.Atan2(input.Direction.x, input.Direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
 
@@ -99,6 +116,7 @@ public class PlayerMovement : MonoBehaviour
 
             // 移動時：方向 * 力道 * 速度 * 時間
             Vector3 moveDir = Quaternion.Euler(0f, angle, 0f) * Vector3.forward;
+            // 計算最終速度的變量
             Vector3 targetVelocity = moveDir * currentSpeed * input.InputMagnitude;
             rb.linearVelocity = new Vector3 (targetVelocity.x, rb.linearVelocity.y, targetVelocity.z);
 
@@ -106,20 +124,39 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            StopMovement();
+            SetDisplacementEnabled(false);
         }
     }
-    public void SetMovementEnabled(bool enabled)
+    public void SetDisplacementEnabled(bool enabled)
     {
-        canMove = enabled;
-        if (!enabled)
+        if (enabled)
+        {
+            // 解除 X Z 軸鎖定
+            rb.constraints = RigidbodyConstraints.FreezeRotation;
+        }
+        else
         {
             StopMovement();
         }
     }
     void StopMovement()
     {
-        rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+        if (stateMachine.CurrentState != stateMachine.AirState)
+        {
+            // 避免在斜坡走路時，下一幀讀取到向上的速度
+            float gravity = Mathf.Min(0, rb.linearVelocity.y);
+            rb.linearVelocity = new Vector3(0, gravity, 0);
+        }
+        else
+        {
+            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+        }
+
+        // 鎖定 X Z 軸
+        rb.constraints = RigidbodyConstraints.FreezeRotation |
+                         RigidbodyConstraints.FreezePositionX |
+                         RigidbodyConstraints.FreezePositionZ;
+
         CurrentSpeedMagnitude = 0f;
     }
     public void SetLockOnState(bool locked, Transform target)
@@ -141,33 +178,6 @@ public class PlayerMovement : MonoBehaviour
     public void TriggerRootMotion(bool useRootMotion)
     {
         anim.applyRootMotion = useRootMotion;
-        if(useRootMotion)
-        {
-            rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
-        }
-    }
-
-    public void ResizeCollider(float targetHeight)
-    {
-        capsuleCollider.height = targetHeight;
-        capsuleCollider.center = new Vector3(0, (targetHeight / 2f) - 1f, 0);
-
-        Vector3 topPoint = transform.position + capsuleCollider.center + Vector3.up * (targetHeight / 2f - capsuleCollider.radius);
-        Vector3 bottomPoint = transform.position + capsuleCollider.center + Vector3.down * (targetHeight / 2f - capsuleCollider.radius);
-
-        Collider[] overlappedColliders = Physics.OverlapCapsule(topPoint, bottomPoint, capsuleCollider.radius, groundMask);
-
-        foreach (var otherCollider in overlappedColliders)
-        {
-            if (Physics.ComputePenetration(
-                capsuleCollider, transform.position, transform.rotation,
-                otherCollider, otherCollider.transform.position, otherCollider.transform.rotation,
-                out Vector3 direction, out float distance))
-            {
-                transform.position += direction * distance;
-                rb.angularVelocity = Vector3.zero;
-            }
-        }
     }
 
     public void OnDrawGizmos()

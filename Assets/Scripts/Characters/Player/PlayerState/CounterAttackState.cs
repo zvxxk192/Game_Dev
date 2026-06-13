@@ -12,12 +12,15 @@ public class PlayerCounterAttackState : PlayerBaseState
     {
         counterAttackTimer = 0f;
         ctx.PlayerMov.TriggerRootMotion(true);
+        ctx.PlayerMov.SetDisplacementEnabled(true);
+
         if (ctx.WeaponController.currentWeapon != null) 
             ctx.WeaponController.currentWeapon.RequestCounterAttack();
     }
     public override void Exit()
     {
         ctx.PlayerMov.TriggerRootMotion(false);
+        ctx.PlayerMov.SetDisplacementEnabled(false);
 
         // ¨¾¤î°Êµe³Q¤ÁÂ_
         ctx.PlayerReact.OnAnimationEvent_SetInvincible(false);
