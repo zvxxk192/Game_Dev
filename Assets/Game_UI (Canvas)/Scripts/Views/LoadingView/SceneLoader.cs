@@ -34,7 +34,7 @@ public class SceneLoader : MonoBehaviour
     }
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
-        // 宣告開始載入，以通知 UIManager 關閉現在的頁面
+        // 通知 UIManager 關閉現在的頁面
         if (GameStateManager.Instance  != null)
             GameStateManager.Instance.ChangeState(GameStateManager.Instance.GameLoadingState);
 
@@ -70,15 +70,13 @@ public class SceneLoader : MonoBehaviour
         // 在場景加載完後開始加載全域「局部依賴」的物件
         PlayingWorldSceneContext currentContext = Object.FindFirstObjectByType<PlayingWorldSceneContext>();
 
-        // 傳給中央頭腦
-        if (GlobalUIManager.Instance != null)
-            GlobalUIManager.Instance.InitializeNewScene(currentContext);
+        if (GameManager.Instance != null)
+            GameManager.Instance.InitializeNewScene(currentContext);
 
-        // 宣告加載狀態完畢，以通知 UIManager 初始化
+        // 通知 UIManager 初始化
         if (GameStateManager.Instance != null)
             GameStateManager.Instance.ChangeState(GameStateManager.Instance.GamePlayingState);
 
-        // 關閉載入頁面
         loadingView.ClosePanel();
 
         //加個緩衝防止 Bug

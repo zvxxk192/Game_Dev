@@ -7,7 +7,6 @@ public class PlayerStats : MonoBehaviour
 
     public PlayerEventsManager events;
 
-    // SaveSystem.Loading()
     [Header("Loading Value")]
     private int currentLevel = 1;
     public int CurrentLevel
@@ -15,7 +14,7 @@ public class PlayerStats : MonoBehaviour
         get => currentLevel;
         set
         {
-            if (value < 0) value = 0;
+            if (value < 0) value = 1;
             currentLevel = value;
             events.TriggerPlayerLevelUp(currentLevel);
         }
@@ -90,4 +89,34 @@ public class PlayerStats : MonoBehaviour
     {
         CurrentHp = MaxHp;
     }
+
+
+    #region Save Syste
+
+    public SaveData ExportSaveData()
+    {
+        SaveData data = new SaveData();
+        data.level = CurrentLevel;
+        data.exp = CurrentExp;
+        data.hp = CurrentHp;
+
+        data.SetPosition(transform.position);
+
+        return data;
+    }
+
+    public void ImportSaveData(SaveData data)
+    {
+        if (data == null) return;
+
+        CurrentLevel = data.level;
+        CurrentExp = data.exp;
+        CurrentHp = data.hp;
+
+        transform.position = data.GetPosition();
+
+        Debug.Log("[PlayerStats] 玩家屬性已成功載入並更新！");
+    }
+
+    #endregion
 }

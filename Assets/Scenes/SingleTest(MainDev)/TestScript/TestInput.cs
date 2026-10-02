@@ -1,17 +1,22 @@
 using DG.Tweening;
 using UnityEngine;
+using PathCreation;
 using UnityEngine.UI;
 
 public class TestInput : MonoBehaviour
 {
-    [SerializeField] private BaseUISequenceView LoadingView;
+    public PathCreator pathCreator;
+    public EndOfPathInstruction end;
+    public VertexPath vertexPath;
+    public BezierPath bezierPath;
+    public float speed;
+    float dstTravelled;
 
-
-    private void Update()
+    void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            LoadingView.OpenPanel();
-        }
+        dstTravelled += speed * Time.deltaTime;
+        transform.position = pathCreator.path.GetPointAtDistance(dstTravelled, end);
+        transform.rotation = pathCreator.path.GetRotationAtDistance(dstTravelled, end);
+        
     }
 }
