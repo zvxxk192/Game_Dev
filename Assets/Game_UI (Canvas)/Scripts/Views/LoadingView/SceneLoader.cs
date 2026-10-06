@@ -11,11 +11,7 @@ public class SceneLoader : MonoBehaviour
     [SerializeField] private Slider progressBar;
     [SerializeField] private TextMeshProUGUI progressPercent;
 
-    private void Awake()
-    {
-        // 為跨場景加載物件
-        DontDestroyOnLoad(gameObject);
-    }
+
     private void OnEnable()
     {
         GameEvents.OnRequestSceneLoad += LoadScene;
@@ -28,12 +24,23 @@ public class SceneLoader : MonoBehaviour
     private void LoadScene(string sceneName)
     {
         // 在場景加載前的前置作業
-        if (GlobalUIManager.Instance != null)
-            GlobalUIManager.Instance.PrepareForSceneChange();
+        PrepareForSceneChange();
         StartCoroutine(LoadSceneRoutine(sceneName));
+    }
+    private void PrepareForSceneChange()
+    {
+        //if (healthBarUI  != null)
+        //    healthBarUI.gameObject.SetActive(false);
+        //if (statusTextController != null)
+        //    statusTextController.gameObject.SetActive(false);
     }
     private IEnumerator LoadSceneRoutine(string sceneName)
     {
+        Time.timeScale = 1f;
+
+        string finalSceneToLoadName = string.IsNullOrEmpty(sceneName)
+            ? SceneManager.GetActiveScene().name : sceneName;
+
         // 通知 UIManager 關閉現在的頁面
         if (GameStateManager.Instance  != null)
             GameStateManager.Instance.ChangeState(GameStateManager.Instance.GameLoadingState);
@@ -45,7 +52,7 @@ public class SceneLoader : MonoBehaviour
         yield return new WaitForSecondsRealtime(loadingView.InFadeDuration);
 
         // 開始異步加載場景
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(finalSceneToLoadName);
 
         // 阻止場景讀取完畢後馬上切換
         asyncLoad.allowSceneActivation = false;

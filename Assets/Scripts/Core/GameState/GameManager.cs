@@ -15,8 +15,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public GameContext gameContext { get; private set; }    // 給 GameStateManager 用的上下文
+    [field: SerializeField] public GameContext GameContext { get; private set; }    // 給 GameStateManager 用的上下文
 
+    private void Awake()
+    {
+        GameContext = gameObject.GetComponent<GameContext>();
+    }
 
     public void InitializeNewScene(PlayingWorldSceneContext sceneContext)
     {
@@ -28,7 +32,7 @@ public class GameManager : MonoBehaviour
 
         GameObject newPlayer = sceneContext.LevelPlayer;
 
-        if (sceneContext.LevelPlayer != null)
-            gameContext.Setup(newPlayer);
+        if (newPlayer != null)
+            GameContext.Setup(newPlayer);
     }
 }

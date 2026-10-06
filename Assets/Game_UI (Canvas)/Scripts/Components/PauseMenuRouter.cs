@@ -63,14 +63,14 @@ public class PauseMenuRouter : MonoBehaviour
 
         // 預防讀到還未佈局完的物件位置
         Canvas.ForceUpdateCanvases();
-        //// 預設打開第一個分頁
-        //if (tabs.Length > 0)
-        //{
-        //    SwitchTab(0);
-        //}
+        // 預設打開第一個分頁
+        if (tabs.Length > 0)
+        {
+            SwitchTab(0, true);
+        }
     }
 
-    public void SwitchTab(int newIndex)
+    public void SwitchTab(int newIndex, bool isFirstOpen = false)
     {
         BaseUISequenceView targetPanel = tabs[newIndex].contentView;
 
@@ -79,7 +79,7 @@ public class PauseMenuRouter : MonoBehaviour
             // 抓取玩家點擊的那個按鈕的 Y 座標
             float targetY = tabs[newIndex].tabButton.GetComponent<RectTransform>().anchoredPosition.y;
 
-            // 殺掉游標身上可能還沒跑完的舊動畫，然後滑向新目標
+            // 殺掉游標沒跑完的動畫，直接滑向新目標
             selectionIndicator?.DOKill();
             selectionIndicator.DOAnchorPosY(targetY, indicatorDuration).SetEase(Ease.OutBack).SetUpdate(true);
         }
@@ -94,6 +94,9 @@ public class PauseMenuRouter : MonoBehaviour
         currentOpenPanel = targetPanel;
         _oldIndex = newIndex;
 
+        // 打開初始狀態(Consume)頁面，但不要實現
+        if (isFirstOpen) return;
+
         // 實現第一個 (Consume) 的功能
         if (newIndex == 0)
         {
@@ -101,7 +104,10 @@ public class PauseMenuRouter : MonoBehaviour
         }
 
         // 實現最後一個 (Quit) 的功能
-        // Application.Quit();
+        if (newIndex ==  tabs.Length - 1)
+        {
+            GameEvents.OnRequestSceneLoad("Scene_MainMenu");
+        }
     }
 
     private void OnDestroy()

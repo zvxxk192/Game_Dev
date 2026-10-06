@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 public class VoiceVolumeController : MonoBehaviour
 {
@@ -11,6 +12,22 @@ public class VoiceVolumeController : MonoBehaviour
     //[Header("Voice Component")]
     //[SerializeField] private AudioSource audioSource;
 
+    private void Awake()
+    {
+        // 根據自身名字劃分職責
+        if (gameObject.name == "MasterVoiceController")
+        {
+            int volumePercentage = Mathf.RoundToInt(AudioManager.Instance.GlobalSfxVolume * 100);
+            volumeText.text = volumePercentage.ToString() + "%";
+            volumeScrollbar.value = volumePercentage;
+        }
+        else if (gameObject.name == "MusicVoiceController")
+        {
+            int volumePercentage = Mathf.RoundToInt(AudioManager.Instance.GlobalBgmVolume * 100);
+            volumeText.text = volumePercentage.ToString() + "%";
+            volumeScrollbar.value = volumePercentage;
+        }
+    }
     private void Start()
     {
         if (volumeScrollbar != null)

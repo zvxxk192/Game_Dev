@@ -34,7 +34,7 @@ public class GameStateManager : MonoBehaviour
         if (_instance == null) _instance = this;
         else if (_instance != this) Destroy(transform.root.gameObject);
 
-        gameContext = GameManager.Instance.gameContext;
+        gameContext = GameManager.Instance.GameContext;
 
         if (gameContext != null)
         {

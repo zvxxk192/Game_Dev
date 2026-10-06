@@ -9,12 +9,7 @@ public class RespawnBtn : MonoBehaviour, IPointerUpHandler, IPointerEnterHandler
     [SerializeField] private float respawnTextLoopDuration = 0.5f;
     [SerializeField] private TextMeshProUGUI respawnText;
     [SerializeField] private Image respawnIcon;
-    private RespawnScene respawnScene;
 
-    private void Awake()
-    {
-        respawnScene = GlobalUIManager.Instance.RespawnSceneApi;
-    }
     public void OnPointerEnter(PointerEventData eventData)
     {
         respawnText.DOKill();
@@ -26,5 +21,5 @@ public class RespawnBtn : MonoBehaviour, IPointerUpHandler, IPointerEnterHandler
         respawnText.DOFade(0.2f, respawnTextLoopDuration).SetLoops(-1, LoopType.Yoyo).SetUpdate(true);
     }
     public void OnPointerUp(PointerEventData eventData)
-        => respawnScene.OnFullRespawnSceneBtnClick();
+        => GameEvents.OnRequestSceneLoad("");
 }

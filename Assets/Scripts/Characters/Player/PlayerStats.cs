@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[Pausable]
 public class PlayerStats : MonoBehaviour
 {
     [Header("Data Sources")]
@@ -7,6 +8,9 @@ public class PlayerStats : MonoBehaviour
 
     public PlayerEventsManager events;
 
+
+    [Header("Simple Status")]
+    public float totalPlayingTime { get; private set; } = 0f;
     [Header("Loading Value")]
     private int currentLevel = 1;
     public int CurrentLevel
@@ -27,11 +31,6 @@ public class PlayerStats : MonoBehaviour
         {
             if (value < 0) value = 0;
             currentExp = value;
-            //if (currentExp >= ExpToNextLevel)
-            //{
-            //    currentExp -= ExpToNextLevel;
-            //    CurrentLevel++;
-            //}
             events.TriggerPlayerExpChanged(currentExp, ExpToNextLevel);
         }
     }
@@ -85,13 +84,22 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    void Awake()
+    private void Awake()
     {
         CurrentHp = MaxHp;
+
+        if (SaveSystem.IsLoadingSave)
+        {
+            ImportSaveData(SaveSystem.CurrentSaveData);
+        }
+    }
+    private void Update()
+    {
+        totalPlayingTime += Time.deltaTime;
     }
 
 
-    #region Save Syste
+    #region Save System
 
     public SaveData ExportSaveData()
     {
@@ -99,21 +107,19 @@ public class PlayerStats : MonoBehaviour
         data.level = CurrentLevel;
         data.exp = CurrentExp;
         data.hp = CurrentHp;
-
-        data.SetPosition(transform.position);
+        data.totalPlayingTime = totalPlayingTime;
 
         return data;
     }
 
-    public void ImportSaveData(SaveData data)
+    private void ImportSaveData(SaveData data)
     {
         if (data == null) return;
 
         CurrentLevel = data.level;
         CurrentExp = data.exp;
         CurrentHp = data.hp;
-
-        transform.position = data.GetPosition();
+        totalPlayingTime += data.totalPlayingTime;
 
         Debug.Log("[PlayerStats] 玩家屬性已成功載入並更新！");
     }

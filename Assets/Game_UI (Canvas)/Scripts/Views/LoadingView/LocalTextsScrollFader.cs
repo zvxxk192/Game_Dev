@@ -1,8 +1,8 @@
 using TMPro;
 using DG.Tweening;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
+using System.Collections;
 
 public class LocalTextsScrollFader : MonoBehaviour
 {
