@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
@@ -13,18 +14,14 @@ public class EnemyController : MonoBehaviour
     public EnemyData data;
 
     [Header("Scene References")]
-    [SerializeField] private Transform[] waypoints;
+    [SerializeField] private Vector3[] waypoints;
     public Transform Player { get; private set; }
 
     [Header("Reference")]
     private NavMeshAgent agent;
     private Animator anim;
-    private EnemyCombat combat;
-    private EnemyReaction reaction;
     private Rigidbody rb;
     private EnemyStats stats;
-    private EnemyEventsManager events;
-    private EnemyStateMachine stateMachine;
 
     public float DistSqr { get; private set; } = float.MaxValue;
 
@@ -32,16 +29,14 @@ public class EnemyController : MonoBehaviour
 
     private static readonly int speedID = Animator.StringToHash("Speed");
 
+    public event Action<EnemyController> OnEnemyDead;
+
     void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         anim = GetComponent<Animator>();
-        combat = GetComponent<EnemyCombat>();
-        reaction = GetComponent<EnemyReaction>();
         rb = GetComponent<Rigidbody>();
         stats = GetComponent<EnemyStats>();
-        events = GetComponent<EnemyEventsManager>();
-        stateMachine = GetComponent<EnemyStateMachine>();
     }
     void Start()
     {
@@ -49,7 +44,7 @@ public class EnemyController : MonoBehaviour
         if (waypoints.Length > 0 && stats != null)
         {
             agent.speed = stats.PatrolSpeed;
-            agent.SetDestination(waypoints[0].position);
+            agent.SetDestination(waypoints[0]);
         }
     }
     void Update()
@@ -102,8 +97,9 @@ public class EnemyController : MonoBehaviour
         yield return new WaitForSeconds(data.PatrolWaitTime);
         IsWaiting = false;
         agent.isStopped = false;
+
         currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
-        agent.SetDestination(waypoints[currentWaypointIndex].position);
+        agent.SetDestination(waypoints[currentWaypointIndex]);
     }
 
     public void RequestStagger(Vector3 attackerPos)
@@ -119,7 +115,7 @@ public class EnemyController : MonoBehaviour
         dir.y = 0;
         if (dir != Vector3.zero) transform.rotation = Quaternion.LookRotation(dir);
 
-        int num = Random.Range(1, 3);
+        int num = UnityEngine.Random.Range(1, 3);
         anim.CrossFade($"StandingReact{num}", 0.1f);
         // À»°h (¤Ï¤è¦V)
         rb.AddForce(-dir * stats.KnockbackForce + Vector3.up * 5f, ForceMode.Impulse);
@@ -129,6 +125,8 @@ public class EnemyController : MonoBehaviour
     }
     public void RequestDie()
     {
+        OnEnemyDead?.Invoke(this);
+
         agent.isStopped = true;
         anim.CrossFade("Death", 0.1f);
         GetComponent<Collider>().enabled = false;

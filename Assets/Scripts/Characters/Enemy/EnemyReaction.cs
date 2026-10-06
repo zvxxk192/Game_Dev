@@ -16,13 +16,11 @@ public class EnemyReaction : MonoBehaviour, IDamageable
 
     private float lastHitTime;
 
-    private Animator anim;
     private EnemyStats stats;
     private EnemyStateMachine stateMachine;
 
     void Awake()
     {
-        anim = GetComponent<Animator>();
         stats = GetComponent<EnemyStats>();
         stateMachine = GetComponent<EnemyStateMachine>();
     }
